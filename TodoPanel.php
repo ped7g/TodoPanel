@@ -44,7 +44,7 @@ class TodoPanel extends Object implements IDebugPanel
 	 * @param string|path $basedir
 	 * @param array $ignoreMask
 	 */
-	public function __construct($basedir = APP_DIR, $ignoreMask = array( '.svn', 'sessions', 'temp', 'log' ))
+	public function __construct($basedir = APP_DIR, $ignoreMask = array( '/.svn/', '/sessions/', '/temp/', '/log/' ))
 	{
 		$this->scanDirs = array(realpath($basedir));
 		$this->setSkipPatterns($ignoreMask);
@@ -58,7 +58,7 @@ class TodoPanel extends Object implements IDebugPanel
 	 */
 	public function setSkipPatterns($ignoreMask)
 	{
-		$this->ignoreMask = array_merge( $ignoreMask, str_replace( '/', '\\', $ignoreMask ) );
+		$this->ignoreMask = array_merge( str_replace( '\\', '/', $ignoreMask ), str_replace( '/', '\\', $ignoreMask ) );
 	}
 
 
@@ -151,11 +151,10 @@ class TodoPanel extends Object implements IDebugPanel
 			$todo = array();
 			foreach ($iterator as $path => $match) {
 				$ignorethisone = false;
-				foreach ($this->ignoreMask as $pattern) {
-					if (preg_match('~' . $pattern . '~', $path)) {
-						continue;
-					}
+				foreach ( $this->ignoreMask as $pattern ) {
+					if ( strpos( $path, $pattern ) !== false ) { $ignorethisone = true; break; }
 				}
+				if ( $ignorethisone ) continue;
 				$relative = trim( str_replace($dir, '', $path), '/\\' );
 
 				$handle = fopen("safe://" . $path, 'r');
