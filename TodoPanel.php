@@ -195,10 +195,9 @@ class TodoPanel extends Object implements IDebugPanel
 					}
 				}
 				if (isset($m['todo']) && !empty($m['todo'])) {
-					if ($this->highlight) {
-						foreach ($m['todo'] as $k => $t) {
-							$m['todo'][$k] = $this->highlight($t);
-						}
+					foreach ($m['todo'] as $k => $t) {
+						$t = htmlSpecialChars($t);
+						$m['todo'][$k] = $this->highlight ? $this->highlight( $t ) : $t;
 					}
 					$todo[$relative] = $m['todo'];
 				}
