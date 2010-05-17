@@ -179,18 +179,15 @@ class TodoPanel extends Object implements IDebugPanel
 				if (count($this->pattern) === 0) {
 					throw new InvalidStateException('No patterns specified for TodoPanel.');
 				}
-				preg_match_all('~
-					(//) #line comments
-						.*? #anything before todo pattern
-						(' . implode('|', $this->pattern) . ') #annotation/line type
-						(?P<todo>.*?) #todo content
-					(\r|\n){1,2} #end line comments
-					~mixs', $res, $m);
-				preg_match_all('~/\*\*?(?P<content>.*?)\*/~mis', $res, $blocks);
+				$todopatterns = '(' . implode('|', $this->pattern) . ')';
+				//search trough single line comments
+				preg_match_all( '~//.*?' . $todopatterns . '\s+(?P<todo>.*)~i', $res, $m);
+				//search trough block comments
+				preg_match_all('~/\*+(?P<content>.*?)\*/~mis', $res, $blocks);
 				foreach ($blocks['content'] as $block) {
 					foreach (explode("\n", $block) as $line) {
-						if (preg_match('~(' . implode('|', $this->pattern) . ')(?P<content>.*?)$~mixs', $line, $p)) {
-							array_push($m['todo'], trim($p['content']));
+						if (preg_match('~' . $todopatterns . '\s+(?P<todo>.*?)\s*$~i', $line, $p)) {
+							array_push($m['todo'], $p['todo']);
 						}
 					}
 				}
