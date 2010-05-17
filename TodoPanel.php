@@ -52,7 +52,7 @@ class TodoPanel extends Object implements IDebugPanel
 	 * @param string|path $basedir
 	 * @param array $ignoreMask
 	 */
-	public function __construct($basedir = APP_DIR, $ignoreMask = array( '/.svn/', '/sessions/', '/temp/', '/log/' ))
+	public function __construct($basedir = APP_DIR, $ignoreMask = array( '/.git/', '/.svn/', '/sessions/', '/temp/', '/log/' ))
 	{
 		$this->scanDirs = array(realpath($basedir));
 		$this->setSkipPatterns($ignoreMask);
