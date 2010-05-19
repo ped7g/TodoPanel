@@ -13,6 +13,10 @@ use \Nette\IO\SafeStream;
 use \Nette\Object;
 use \Nette\Templates\Template;
 use \Nette\Templates\LatteFilter;
+use \InvalidStateException;
+use \DirectoryNotFoundException;
+use \RecursiveDirectoryIterator;
+use \RecursiveIteratorIterator;
 
 class TodoPanel extends Object implements IDebugPanel
 {
@@ -157,7 +161,7 @@ class TodoPanel extends Object implements IDebugPanel
 		$todopatterns = '(' . implode('|', $this->pattern) . ')';
 		@SafeStream::register(); //intentionally @ (prevents multiple registration warning)
 		foreach ($this->scanDirs as $dir) {
-			$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
+			$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
 			foreach ($iterator as $path => $match) {
 				$ignorethisone = false;
 				foreach ( $this->ignoreMask as $pattern ) {
@@ -209,14 +213,14 @@ class TodoPanel extends Object implements IDebugPanel
 	 * Add directory (or directories) to list.
 	 * @param  string|array
 	 * @return void
-	 * @throws \DirectoryNotFoundException if path is not found
+	 * @throws DirectoryNotFoundException if path is not found
 	 */
 	public function addDirectory($path)
 	{
 		foreach ((array) $path as $val) {
 			$real = realpath($val);
 			if ($real === FALSE) {
-				throw new /*\*/DirectoryNotFoundException("Directory '$val' not found.");
+				throw new DirectoryNotFoundException("Directory '$val' not found.");
 			}
 			$this->scanDirs[] = $real;
 		}
