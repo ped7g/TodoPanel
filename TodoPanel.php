@@ -153,6 +153,7 @@ class TodoPanel extends Object implements IDebugPanel
 	 */
 	private function generateTodo()
 	{
+		$todopatterns = '(' . implode('|', $this->pattern) . ')';
 		@SafeStream::register(); //intentionally @ (prevents multiple registration warning)
 		foreach ($this->scanDirs as $dir) {
 			$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
@@ -179,7 +180,6 @@ class TodoPanel extends Object implements IDebugPanel
 				if (count($this->pattern) === 0) {
 					throw new InvalidStateException('No patterns specified for TodoPanel.');
 				}
-				$todopatterns = '(' . implode('|', $this->pattern) . ')';
 				//search trough single line comments
 				preg_match_all( '~//.*?' . $todopatterns . '\s+(?P<todo>.*)~i', $res, $m);
 				//search trough block comments
