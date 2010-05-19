@@ -153,11 +153,11 @@ class TodoPanel extends Object implements IDebugPanel
 	 */
 	private function generateTodo()
 	{
+		$todo = array();
 		$todopatterns = '(' . implode('|', $this->pattern) . ')';
 		@SafeStream::register(); //intentionally @ (prevents multiple registration warning)
 		foreach ($this->scanDirs as $dir) {
 			$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
-			$todo = array();
 			foreach ($iterator as $path => $match) {
 				$ignorethisone = false;
 				foreach ( $this->ignoreMask as $pattern ) {
